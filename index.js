@@ -55,70 +55,6 @@ exp.listen(port, () => {
     console.log(`Server is listening at http://localhost:${port}`);
 });
 
-//DB.add_user("ass", "dad");
-////
-
-//DB.get_all_users().then((result) => {
-//    console.log(result)
-//})
-//
-//DB.add_cube(1, "mac1", "id1");
-//DB.add_project(1, "DD2", true, 1);
-//DB.add_project(1, "DD3", true, 2);
-//DB.add_project(1, "DD3", true, 3);
-//DB.add_project(1, "DD3", true, 4);
-//DB.add_project(1, "DD3", true, 5);
-//DB.add_project(1, "DD3", true, 6);
-//
-//
-////DB.get_cubes(1).then((result) => {
-////    console.log(result);
-////});
-//
-//DB.set_active_cube(1, "mac1", "id1");
-////
-////DB.get_user("ass").then((result) => {
-////    console.log(result);
-////});
-//
-//app.update_cube("mac1", "id1", 1);
-//
-//
-////DB.add_cube(1, "fsdfds", "gr1").then((result) => {
-////    console.log(result);
-////});
-////
-//////DB.add_time_to_project(4, 4);
-////
-//DB.get_user_projects(1).then((result) => {
-//    console.log(result);
-//});
-//
-//setInterval(()=>{
-//    app.update_cube("mac1", "id1", 1);
-//
-//
-////DB.add_cube(1, "fsdfds", "gr1").then((result) => {
-////    console.log(result);
-////});
-////
-//////DB.add_time_to_project(4, 4);
-////
-//DB.get_user_projects(1).then((result) => {
-//    console.log(result);
-//});
-//},5000)
-
-//DB.add_event(1, "end");
-//
-
-
-//DB.get_events(1).then((result) => {
-//    console.log(result);
-//});
-
-
-
 const session = require('express-session');
 
 exp.set('view engine', 'ejs');
@@ -224,10 +160,6 @@ function req_validator(token, fields = []) {
         success: true
     }
 }
-
-
-//w komentarzach masz co masz podać po req.body masz nazwy pól w obiekcie który wysylasz w JSON
-
 
 exp.post('/get_user_projects', (req, res) => { //podajesz token dostajesz tablice projektów
     let validator_result = req_validator(req.body.token);

@@ -14,32 +14,6 @@ class Cube {
     }
 }
 
-//Cube.prototype.update = function (side) {
-//    clearTimeout(this.tm);
-//    
-//    let time = (Date.now() - this.last_update_time) / 1000;
-//    if(time > this.timeout){
-//       time = 0; 
-//    }
-//    if (side == this.previous_side) {
-//        DB.add_time_to_project_by_side(this.user_id, side, time);
-//    } else {
-//        if (this.previous_side != -1) {
-//            DB.add_time_to_project_by_side(this.user_id, this.previous_side, time);
-//            DB.add_event(this.user_id, this.previous_side, "Time stop");
-//        }
-//        DB.add_event(this.user_id, side, "Time start");
-//    }
-//
-//    this.last_update_time = Date.now();
-//    this.previous_side = side;
-//    
-//    this.tm = setTimeout((e) => {
-//        DB.add_event(this.user_id, this.previous_side, "Time stop");
-//        app.remove_cube(this);
-//    }, this.timeout * 1000);
-//}
-
 Cube.prototype.save_time = function(){
     DB.add_time_to_project(this.user_id, this.cube_mac, this.cube_user_id, this.previous_side, ((Date.now() - this.last_update_time) / 1000));
     this.last_update_time = Date.now();
