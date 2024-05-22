@@ -1,12 +1,13 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+const config = require("./config.js");
 
 require('dotenv').config();
 
 const GOOGLE_CLIENT_ID = `${process.env.GOOGLE_API_ID}`;
 const GOOGLE_CLIENT_SECRET = `${process.env.GOOGLE_API_SECRET}`;
-const REDIRECT_URI = '<http://localhost:3000/auth/google/callback>';
+const REDIRECT_URI = `<${config.server_address}/auth/google/callback>`;
 
 // Initiates the Google Login flow
 router.get('/auth/google', (req, res) => {
