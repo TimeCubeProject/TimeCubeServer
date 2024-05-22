@@ -164,6 +164,7 @@ const connection = con.connect(mysql);
     module.exports.remove_project = async function (user_id, project_id) {
         try {
             const result = await connection.promise().query(`DELETE FROM Projects WHERE UserID = ? AND ProjectID = ?;`, [user_id, project_id]);
+            return result;
         } catch (error) {
             console.error("Error removing project: ", error);
             return {
