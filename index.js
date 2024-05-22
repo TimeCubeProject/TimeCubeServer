@@ -13,7 +13,7 @@ const login_callback_address = config.login_callback_address;
 
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-if(!process.env.GOOGLE_API_ID || !process.env.GOOGLE_API_SECRET || !process.env.MYSQL_PASSWROD || !process.env.JWT_SECRET || !process.env.MYSQL_LOGIN){
+if (!process.env.GOOGLE_API_ID || !process.env.GOOGLE_API_SECRET || !process.env.MYSQL_PASSWROD || !process.env.JWT_SECRET || !process.env.MYSQL_LOGIN) {
     throw new Error("One or more keys missing, check .env file for missing keys");
 }
 
@@ -65,23 +65,11 @@ exp.use(session({
     secret: 'SECRET'
 }));
 
-exp.set('views, __dirname + ./views');
-
-exp.get('/auth', function (req, res) {
-    res.render('pages/auth');
-});
-
-exp.get('/succes', function (req, res) {
-    res.render('pages/succes');
-});
-
 const passport = require('passport');
 var userProfile;
 
 exp.use(passport.initialize());
 exp.use(passport.session());
-
-exp.set('view engine', 'ejs');
 
 exp.get('/error', (req, res) => res.send("error logging in"));
 
@@ -92,8 +80,6 @@ passport.serializeUser(function (user, cb) {
 passport.deserializeUser(function (obj, cb) {
     cb(null, obj);
 });
-
-
 
 passport.use(new GoogleStrategy({
         clientID: GOOGLE_CLIENT_ID,
@@ -118,13 +104,8 @@ exp.get('/auth/google/callback',
     (req, res) => {
         app.login(userProfile, res).then((e) => {
             res.redirect(`${login_callback_address}?token=${e}`);
-            //res.redirect('./../../show_tasks');
-            //res.send("a00");
         });
-        //console.log(userProfile)
     });
-
-
 
 exp.post("/update", (req, res) => {
     app.update_cube(req.body.cube_mac, req.body.cube_id, req.body.cube_side, res).then((e) => {
@@ -274,10 +255,10 @@ exp.post('/set_project_active', (req, res) => { // podajesz token, id projektu, 
         });
     } else {
         res.send({
-                success: false,
-                code: 102,
-                error: "Missing request fields"
-            });
+            success: false,
+            code: 102,
+            error: "Missing request fields"
+        });
     }
 
 
@@ -290,7 +271,7 @@ exp.post('/add_cube', (req, res) => { // podajesz token, mac kostki i id kostki 
         res.send(validator_result);
         return false;
     }
-    
+
     DB.add_cube(app.get_id_from_token(req.body.token), req.body.cube_mac, req.body.cube_id).then((result) => {
         res.send(result);
     });
@@ -303,7 +284,7 @@ exp.post('/remove_cube', (req, res) => { // podajesz token, mac kostki i id kost
         res.send(validator_result);
         return false;
     }
-    
+
     DB.remove_cube(app.get_id_from_token(req.body.token), req.body.cube_mac, req.body.cube_id).then((result) => {
         res.send(result);
     });
