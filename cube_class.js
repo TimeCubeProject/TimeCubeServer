@@ -20,7 +20,7 @@ Cube.prototype.save_time = function(){
 }
 
 Cube.prototype.update = function (side) { 
-    if((side == -1 || side == 0) && this.previous_side != -1){
+    if((side == -1) && this.previous_side != -1){
         clearInterval(this.save_time_call);
         this.save_time();
         DB.add_event(this.user_id, this.cube_mac, this.cube_user_id, this.previous_side, "Time stop");
