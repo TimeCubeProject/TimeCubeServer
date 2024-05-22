@@ -13,6 +13,10 @@ const login_callback_address = config.login_callback_address;
 
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
+if(!process.env.GOOGLE_API_ID || !process.env.GOOGLE_API_SECRET || !process.env.MYSQL_PASSWROD || !process.env.JWT_SECRET || !process.env.MYSQL_LOGIN){
+    throw new Error("One or more keys missing, check .env file for missing keys");
+}
+
 const GOOGLE_CLIENT_ID = `${process.env.GOOGLE_API_ID}`;
 const GOOGLE_CLIENT_SECRET = `${process.env.GOOGLE_API_SECRET}`;
 
