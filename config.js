@@ -4,5 +4,6 @@ module.exports = {
     port: 3000, //app port
     database_host: "localhost",
     database_name: "kostka",
-    database_table_name: "kostka"
+    database_table_name: "kostka",
+    server_address: "https://dergcube.westus.cloudapp.azure.com"
 }
