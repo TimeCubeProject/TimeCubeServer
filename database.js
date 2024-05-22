@@ -162,7 +162,15 @@ const connection = con.connect(mysql);
     }
 
     module.exports.remove_project = async function (user_id, project_id) {
+        if(!user_id){
+            return {
+                success: false,
+                code: 201,
+                error: "Invalid request"
+            };
+        }
         try {
+            const remove_events = await connection.promise().query(`DELETE FROM Events WHERE ProjectID = ?;`, [project_id]);
             const result = await connection.promise().query(`DELETE FROM Projects WHERE UserID = ? AND ProjectID = ?;`, [user_id, project_id]);
             return result;
         } catch (error) {
