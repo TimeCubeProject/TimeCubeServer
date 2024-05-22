@@ -108,7 +108,7 @@ exp.get('/auth/google/callback',
     });
 
 exp.post("/update", (req, res) => {
-    app.update_cube(req.body.cube_mac, req.body.cube_id, req.body.cube_side, res).then((e) => {
+    app.update_cube(req.body.mac, req.body.id, req.body.currentWall, res).then((e) => {
         DB.get_user_projects(1).then((result) => {
             res.send(result)
         });
