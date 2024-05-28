@@ -162,7 +162,7 @@ const connection = con.connect(mysql);
     }
 
     module.exports.remove_project = async function (user_id, project_id) {
-        if(!user_id){
+        if (!user_id) {
             return {
                 success: false,
                 code: 201,
@@ -192,6 +192,16 @@ const connection = con.connect(mysql);
                     success: false,
                     code: 202,
                     error: "No matches"
+                };
+            }
+
+            const [rows_pr, fields_pr] = await connection.promise().query(`SELECT * FROM Projects WHERE CubeID = ? AND UserID = ? AND Side = ?;`, [cube_id, user_id, side]);
+
+            if (rows_pr[0]) {
+                return {
+                    success: false,
+                    code: 203,
+                    error: "Multiple projects on single cube's side"
                 };
             }
 
@@ -255,9 +265,11 @@ const connection = con.connect(mysql);
         module.exports.get_cube(cube_mac, cube_user_id).then(async (cube) => {
             try {
                 const [pr_rows, pr_fields] = await connection.promise().query(`SELECT * FROM Projects WHERE UserID = ? AND CubeID = ? AND Side = ?;`, [user_id, cube.CubeID, side]);
-                
-                if(!pr_rows[0]){
-                    return {error: "No project found on this side"};
+
+                if (!pr_rows[0]) {
+                    return {
+                        error: "No project found on this side"
+                    };
                 }
 
                 const result = await connection.promise().query(`UPDATE Projects
@@ -308,12 +320,12 @@ const connection = con.connect(mysql);
         module.exports.get_cube(cube_mac, cube_user_id).then(async (cube) => {
             try {
                 const [pr_rows, pr_fields] = await connection.promise().query(`SELECT * FROM Projects WHERE UserID = ? AND CubeID = ? AND Side = ?;`, [user_id, cube.CubeID, side]);
-                
-                if(!pr_rows[0]){
+
+                if (!pr_rows[0]) {
                     return false;
                 }
 
-               const result = await connection.promise().query(`INSERT INTO Events (ProjectID, Name) VALUES (?, ?);`, [pr_rows[0].ProjectID, event_name]);
+                const result = await connection.promise().query(`INSERT INTO Events (ProjectID, Name) VALUES (?, ?);`, [pr_rows[0].ProjectID, event_name]);
             } catch (error) {
                 console.error("Error adding time: ", error);
                 return {
