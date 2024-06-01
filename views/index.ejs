@@ -33,6 +33,10 @@
          .log-error {
             color: red;
         }
+        
+         .log-update {
+            color: blue;
+        }
 
         div {
             padding: 5px;
@@ -51,6 +55,8 @@
                 <div class="log-response"><%= log %></div>
             <% } else if (log.includes('error')) { %>
                 <div class="log-error"><%= log %></div>
+            <% } else if (log.includes('/update')) { %>
+                <div class="log-update"><%= log %></div>
             <% } else { %>
                 <div><%= log %></div>
             <% } %>
