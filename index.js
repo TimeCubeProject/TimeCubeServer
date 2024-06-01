@@ -20,26 +20,6 @@ if (!process.env.GOOGLE_API_ID || !process.env.GOOGLE_API_SECRET || !process.env
 exp.set('view engine', 'ejs');
 
 
-let logs = [];
-let max_log_length = 100;
-
-function add_log (log) {
-    if (!log instanceof String) {
-        return false;
-    }
-
-    logs.unshift(log);
-
-    if (logs.length > max_log_length) {
-        logs.pop();
-    }
-
-    return logs;
-}
-
-exp.get('/', (req, res) => {
-    res.render('page', { logs: logs });
-});
 
 
 
@@ -145,7 +125,7 @@ exp.get('/auth/google/callback',
     });
 
 exp.post("/update", (req, res) => {
-    add_log(`Endpoint: /update - Request: ${JSON.stringify(req.body)}`);
+    app.add_log(`Endpoint: /update - Request: ${JSON.stringify(req.body)}`);
     app.update_cube(req.body.mac, req.body.id, req.body.currentWall, res).then((e) => {
             console.log(req.body);
             res.send(e);
@@ -188,12 +168,12 @@ function req_validator(token, fields = []) {
 }
 
 exp.post('/get_user_projects', (req, res) => {
-    add_log(`Endpoint: /get_user_projects - Request: ${JSON.stringify(req.body)}`);
+    app.add_log(`Endpoint: /get_user_projects - Request: ${JSON.stringify(req.body)}`);
 
     let validator_result = req_validator(req.body.token);
     if (!validator_result.success) {
         res.send(validator_result);
-        add_log(`Endpoint: /get_user_projects - Response: ${JSON.stringify(validator_result)}`);
+        app.add_log(`Endpoint: /get_user_projects - Response: ${JSON.stringify(validator_result)}`);
         return false;
     }
 
@@ -212,18 +192,18 @@ exp.post('/get_user_projects', (req, res) => {
                 e.CubeID = null;
             });
             res.send(result);
-            add_log(`Endpoint: /get_user_projects - Response: ${JSON.stringify(result)}`);
+            app.add_log(`Endpoint: /get_user_projects - Response: ${JSON.stringify(result)}`);
         });
     });
 });
 
 exp.post('/get_user_cubes', (req, res) => {
-    add_log(`Endpoint: /get_user_cubes - Request: ${JSON.stringify(req.body)}`);
+    app.add_log(`Endpoint: /get_user_cubes - Request: ${JSON.stringify(req.body)}`);
 
     let validator_result = req_validator(req.body.token);
     if (!validator_result.success) {
         res.send(validator_result);
-        add_log(`Endpoint: /get_user_cubes - Response: ${JSON.stringify(validator_result)}`);
+        app.add_log(`Endpoint: /get_user_cubes - Response: ${JSON.stringify(validator_result)}`);
         return false;
     }
 
@@ -233,72 +213,72 @@ exp.post('/get_user_cubes', (req, res) => {
             e.CubeID = null;
         });
         res.send(result);
-        add_log(`Endpoint: /get_user_cubes - Response: ${JSON.stringify(result)}`);
+        app.add_log(`Endpoint: /get_user_cubes - Response: ${JSON.stringify(result)}`);
     });
 });
 
 exp.post('/get_events', (req, res) => {
-    add_log(`Endpoint: /get_events - Request: ${JSON.stringify(req.body)}`);
+    app.add_log(`Endpoint: /get_events - Request: ${JSON.stringify(req.body)}`);
 
     let validator_result = req_validator(req.body.token, [req.body.project_id]);
     if (!validator_result.success) {
         res.send(validator_result);
-        add_log(`Endpoint: /get_events - Response: ${JSON.stringify(validator_result)}`);
+        app.add_log(`Endpoint: /get_events - Response: ${JSON.stringify(validator_result)}`);
         return false;
     }
 
     DB.get_events(app.get_id_from_token(req.body.token), req.body.project_id).then((result) => {
         res.send(result);
-        add_log(`Endpoint: /get_events - Response: ${JSON.stringify(result)}`);
+        app.add_log(`Endpoint: /get_events - Response: ${JSON.stringify(result)}`);
     });
 });
 
 exp.post('/add_project', (req, res) => {
-    add_log(`Endpoint: /add_project - Request: ${JSON.stringify(req.body)}`);
+    app.add_log(`Endpoint: /add_project - Request: ${JSON.stringify(req.body)}`);
 
     let validator_result = req_validator(req.body.token, [req.body.name]);
     if (!validator_result.success) {
         res.send(validator_result);
-        add_log(`Endpoint: /add_project - Response: ${JSON.stringify(validator_result)}`);
+        app.add_log(`Endpoint: /add_project - Response: ${JSON.stringify(validator_result)}`);
         return false;
     }
 
     DB.add_project(app.get_id_from_token(req.body.token), req.body.name).then((result) => {
         res.send(result);
-        add_log(`Endpoint: /add_project - Response: ${JSON.stringify(result)}`);
+        app.add_log(`Endpoint: /add_project - Response: ${JSON.stringify(result)}`);
     });
 });
 
 exp.post('/remove_project', (req, res) => {
-    add_log(`Endpoint: /remove_project - Request: ${JSON.stringify(req.body)}`);
+    app.add_log(`Endpoint: /remove_project - Request: ${JSON.stringify(req.body)}`);
 
     let validator_result = req_validator(req.body.token, [req.body.project_id]);
     if (!validator_result.success) {
         res.send(validator_result);
-        add_log(`Endpoint: /remove_project - Response: ${JSON.stringify(validator_result)}`);
+        app.add_log(`Endpoint: /remove_project - Response: ${JSON.stringify(validator_result)}`);
         return false;
     }
 
     DB.remove_project(app.get_id_from_token(req.body.token), req.body.project_id).then((result) => {
         res.send(result);
-        add_log(`Endpoint: /remove_project - Response: ${JSON.stringify(result)}`);
+        app.add_log(`Endpoint: /remove_project - Response: ${JSON.stringify(result)}`);
     });
 });
 
 exp.post('/set_project_active', (req, res) => {
-    add_log(`Endpoint: /set_project_active - Request: ${JSON.stringify(req.body)}`);
+    app.add_log(`Endpoint: /set_project_active - Request: ${JSON.stringify(req.body)}`);
 
     let validator_result = req_validator(req.body.token, [req.body.project_id]);
     if (!validator_result.success) {
         res.send(validator_result);
-        add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(validator_result)}`);
+        app.add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(validator_result)}`);
         return false;
     }
 
     if (req.body.cube_mac == null && req.body.cube_id == null) {
         DB.set_project_active(app.get_id_from_token(req.body.token), req.body.project_id, null, -1).then((result) => {
             res.send(result);
-            add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(result)}`);
+            app.add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(result)}`);
         });
     } else if (req.body.cube_mac == null || req.body.cube_id == null) {
         const response = {
@@ -307,18 +287,18 @@ exp.post('/set_project_active', (req, res) => {
             error: "Invalid request"
         };
         res.send(response);
-        add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(response)}`);
+        app.add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(response)}`);
     } else if (req.body.side) {
         DB.get_cube(req.body.cube_mac, req.body.cube_id).then((e) => {
             if (e) {
                 DB.set_project_active(app.get_id_from_token(req.body.token), req.body.project_id, e.CubeID, req.body.side).then((result) => {
                     res.send(result);
-                    add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(result)}`);
+                    app.add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(result)}`);
                 });
             } else {
                 const response = false;
                 res.send(response);
-                add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(response)}`);
+                app.add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(response)}`);
             }
         });
     } else {
@@ -328,43 +308,41 @@ exp.post('/set_project_active', (req, res) => {
             error: "Missing request fields"
         };
         res.send(response);
-        add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(response)}`);
+        app.add_log(`Endpoint: /set_project_active - Response: ${JSON.stringify(response)}`);
     }
 });
 
 exp.post('/add_cube', (req, res) => {
-    add_log(`Endpoint: /add_cube - Request: ${JSON.stringify(req.body)}`);
+    app.add_log(`Endpoint: /add_cube - Request: ${JSON.stringify(req.body)}`);
 
     let validator_result = req_validator(req.body.token, [req.body.cube_mac, req.body.cube_id]);
     if (!validator_result.success) {
         res.send(validator_result);
-        add_log(`Endpoint: /add_cube - Response: ${JSON.stringify(validator_result)}`);
+        app.add_log(`Endpoint: /add_cube - Response: ${JSON.stringify(validator_result)}`);
         return false;
     }
 
     DB.add_cube(app.get_id_from_token(req.body.token), req.body.cube_mac, req.body.cube_id).then((result) => {
         res.send(result);
-        add_log(`Endpoint: /add_cube - Response: ${JSON.stringify(result)}`);
+        app.add_log(`Endpoint: /add_cube - Response: ${JSON.stringify(result)}`);
     });
 });
 
 exp.post('/remove_cube', (req, res) => {
-    add_log(`Endpoint: /remove_cube - Request: ${JSON.stringify(req.body)}`);
+    app.add_log(`Endpoint: /remove_cube - Request: ${JSON.stringify(req.body)}`);
 
     let validator_result = req_validator(req.body.token, [req.body.cube_mac, req.body.cube_id]);
     if (!validator_result.success) {
         res.send(validator_result);
-        add_log(`Endpoint: /remove_cube - Response: ${JSON.stringify(validator_result)}`);
+        app.add_log(`Endpoint: /remove_cube - Response: ${JSON.stringify(validator_result)}`);
         return false;
     }
 
     DB.remove_cube(app.get_id_from_token(req.body.token), req.body.cube_mac, req.body.cube_id).then((result) => {
         res.send(result);
-        add_log(`Endpoint: /remove_cube - Response: ${JSON.stringify(result)}`);
+        app.add_log(`Endpoint: /remove_cube - Response: ${JSON.stringify(result)}`);
     });
 });
-
-
 
 
 
@@ -372,6 +350,6 @@ exp.post('/remove_cube', (req, res) => {
 
 exp.get('/logs', (req, res) => {
     res.render('index', {
-        logs: logs
+        logs: app.get_logs()
     });
 });

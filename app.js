@@ -6,6 +6,27 @@ require('dotenv').config()
 
 let active_cubes = [];
 
+let logs = [];
+let max_log_length = 100;
+
+module.exports.add_log = function(log) {
+    if (!log instanceof String) {
+        return false;
+    }
+
+    logs.unshift(log);
+
+    if (logs.length > max_log_length) {
+        logs.pop();
+    }
+
+    return logs;
+}
+
+module.exports.get_logs = function() {
+    return logs;
+}
+
 const tokenSecret = `${process.env.JWT_SECRET}`;
 
 module.exports.login = function (user_profile, res) {
@@ -61,6 +82,7 @@ module.exports.remove_cube = function (cube) {
     active_cubes.forEach((e, i) => {
         if (e.cube_mac == cube.cube_mac && e.cube_user_id == cube.cube_user_id) {
             active_cubes.splice(i, 1);
+            app.add_log(`Cube: Remove cube from tracking: ${JSON.stringify(e)}`);
         }
     });
 
