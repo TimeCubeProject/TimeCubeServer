@@ -28,10 +28,10 @@ function add_log (log) {
         return false;
     }
 
-    logs.push(log);
+    logs.unshift(log);
 
     if (logs.length > max_log_length) {
-        logs.shift();
+        logs.pop();
     }
 
     return logs;
@@ -372,6 +372,6 @@ exp.post('/remove_cube', (req, res) => {
 
 exp.get('/logs', (req, res) => {
     res.render('index', {
-        logs: logs.reverse()
+        logs: logs
     });
 });
