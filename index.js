@@ -21,7 +21,18 @@ const GOOGLE_CLIENT_ID = `${process.env.GOOGLE_API_ID}`;
 const GOOGLE_CLIENT_SECRET = `${process.env.GOOGLE_API_SECRET}`;
 
 exp.use(express.json());
-exp.use(cors());
+exp.use(cors({
+  origin: '*', // Allow all origins
+  methods: ['GET', 'POST', 'OPTIONS'], // Allow these methods
+  allowedHeaders: ['Content-Type', 'Access-Control-Allow-Origin', 'Authorization'], // Allow these headers
+  optionsSuccessStatus: 204 // Some legacy browsers choke on 204
+}));
+// const corsOptions = {
+  // origin: 'https://timecubeproject.github.io/',//(https://your-client-app.com)
+  // optionsSuccessStatus: 200,
+ //};
+
+//exp.use(cors(corsOptions));
 
 exp.listen(port, () => {
     console.log(`⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣶⠀⠀⢀⣄⠀⠀⣠⣶⣾⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -84,7 +95,7 @@ passport.deserializeUser(function (obj, cb) {
 passport.use(new GoogleStrategy({
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:3000/auth/google/callback"
+        callbackURL: `${config.server_address}/auth/google/callback`
     },
     function (accessToken, refreshToken, profile, done) {
         userProfile = profile;
@@ -110,11 +121,20 @@ exp.get('/auth/google/callback',
 exp.post("/update", (req, res) => {
     app.update_cube(req.body.mac, req.body.id, req.body.currentWall, res).then((e) => {
         DB.get_user_projects(1).then((result) => {
-            res.send(result)
+           	console.log(req.body)
+	        res.send(result)
         });
     });
 });
 
+//exp.get("/update", (req, res) => {
+    //app.update_cube(req.query.mac, req.query.id, req.query.currentWall, res).then((e) => {
+       // DB.get_user_projects(1).then((result) => {
+        //        console.log(req.query)
+      //          res.send(result)
+    //    });
+  //  });
+//});
 
 function req_validator(token, fields = []) {
     if (token != null) {
