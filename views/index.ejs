@@ -49,7 +49,7 @@
     <h1>Logs Console</h1>
     <div id="console">
         <% logs.forEach(log => { %>
-            <% if (log.includes('Request')) { %>
+            <% if (log.includes('Request') && !log.includes('/update')) { %>
                 <div class="log-request"><%= log %></div>
             <% } else if (log.includes('Response') && !log.includes('error')) { %>
                 <div class="log-response"><%= log %></div>
