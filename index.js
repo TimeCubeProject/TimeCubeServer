@@ -372,6 +372,6 @@ exp.post('/remove_cube', (req, res) => {
 
 exp.get('/logs', (req, res) => {
     res.render('index', {
-        logs: logs
+        logs: logs.reverse()
     });
 });
