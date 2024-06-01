@@ -82,7 +82,7 @@ module.exports.remove_cube = function (cube) {
     active_cubes.forEach((e, i) => {
         if (e.cube_mac == cube.cube_mac && e.cube_user_id == cube.cube_user_id) {
             active_cubes.splice(i, 1);
-            app.add_log(`Cube: Remove cube from tracking: ${JSON.stringify(e)}`);
+            module.exports.add_log(`Cube: Remove cube from tracking: ${JSON.stringify(e)}`);
         }
     });
 
