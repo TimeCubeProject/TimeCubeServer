@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs Console</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 0;
+        }
+
+        #console {
+            background-color: #000;
+            color: #0f0;
+            padding: 3px;
+            border-radius: 5px;
+            height: 85vh;
+            overflow-y: scroll;
+        }
+
+        div {
+            padding: 5px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Logs Console</h1>
+    <div id="console">
+        <% logs.forEach(log => { %>
+        <div><%= log %></div>
+        <% }); %>
+    </div>
+
+    <script>
+        const cons = document.getElementById("console");
+        let scroll = 0;
+        
+        cons.addEventListener("scroll", (evt) => {
+            scroll = evt.target.scrollTop;
+        });
+
+        setInterval(() => {
+            if(scroll == 0){    
+                location.reload();
+            }
+        }, 2000);
+
+    </script>
+</body>
+
+</html>
