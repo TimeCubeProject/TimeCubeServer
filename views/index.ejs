@@ -19,6 +19,19 @@
             border-radius: 5px;
             height: 85vh;
             overflow-y: scroll;
+            color: white;
+        }
+
+        .log-request {
+            color: orange;
+        }
+
+        .log-response {
+            color: green;
+        }
+        
+         .log-error {
+            color: red;
         }
 
         div {
@@ -32,7 +45,15 @@
     <h1>Logs Console</h1>
     <div id="console">
         <% logs.forEach(log => { %>
-        <div><%= log %></div>
+            <% if (log.includes('Request')) { %>
+                <div class="log-request"><%= log %></div>
+            <% } else if (log.includes('Response') && !log.includes('error')) { %>
+                <div class="log-response"><%= log %></div>
+            <% } else if (log.includes('error')) { %>
+                <div class="log-error"><%= log %></div>
+            <% } else { %>
+                <div><%= log %></div>
+            <% } %>
         <% }); %>
     </div>
 
