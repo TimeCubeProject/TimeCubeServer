@@ -24,7 +24,7 @@ Cube.prototype.update = function (side) {
         clearInterval(this.save_time_call);
         this.save_time();
         DB.add_event(this.user_id, this.cube_mac, this.cube_user_id, this.previous_side, "Time stop");
-        app.add_log(`Cube: Time stop at project - ${this.previous_side}: cube - ${JSON.stringify(this)}`);
+        app.add_log(`Cube: Time stop at project - ${this.previous_side}: cube - mac: ${this.cube_mac} id:${this.cube_user_id}`);
         app.remove_cube(this);
         return 0;
     } else if ((side == -1 || side == 0)) {
@@ -35,16 +35,16 @@ Cube.prototype.update = function (side) {
 
     if (this.previous_side == -1) {
         DB.add_event(this.user_id, this.cube_mac, this.cube_user_id, side, "Time start");
-        app.add_log(`Cube: Time start at project - ${side}: cube - ${JSON.stringify(this)}`);
+        app.add_log(`Cube: Time start at project - ${side}: cube - mac: ${this.cube_mac} id:${this.cube_user_id}`);
 
         this.previous_side = side;
     } else if (this.previous_side != side) {
         this.save_time();
 
         DB.add_event(this.user_id, this.cube_mac, this.cube_user_id, this.previous_side, "Time stop");
-        app.add_log(`Cube: Time stop at project - ${this.previous_side}: cube - ${JSON.stringify(this)}`);
+        app.add_log(`Cube: Time stop at project - ${this.previous_side}: cube - mac: ${this.cube_mac} id:${this.cube_user_id}`);
         DB.add_event(this.user_id, this.cube_mac, this.cube_user_id, side, "Time start");
-        app.add_log(`Cube: Time start at project - ${side}: cube - ${JSON.stringify(this)}`);
+        app.add_log(`Cube: Time start at project - ${side}: cube - mac: ${this.cube_mac} id:${this.cube_user_id}`);
 
 
         this.previous_side = side;
