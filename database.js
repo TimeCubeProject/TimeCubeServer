@@ -1,18 +1,23 @@
-const mysql = require('mysql2');
+// Importowanie modułów 
+const mysql = require('mysql2'); // Moduł MySQL2 do połączenia z bazą danych
 
-const config = require("./config.js");
+const config = require("./config.js"); // Plik konfiguracyjny
 
+// Importowanie pliku odpowiedzialnego za połączenie z bazą danych
 const con = require("./connect.js");
-const connection = con.connect(mysql);
+const connection = con.connect(mysql); // Nawiązanie połączenia z bazą danych
+
 
 //#Init
 {
+    // Funkcja inicjalizująca połączenie z bazą danych, wybierając odpowiednią tabelę
     module.exports.init = async function () {
         await connection.query("USE ?;", [config.database_table_name]);
     }
 }
 //#User management functions
 {
+    // Funkcja dodająca użytkownika do bazy danych
     module.exports.add_user = async function (google_id, email) {
         try {
             const result = await connection.promise().query(`INSERT INTO Users (GoogleID, Email) VALUES (?, ?);`, [google_id, email]);
@@ -27,6 +32,7 @@ const connection = con.connect(mysql);
         }
     }
 
+    // Funkcja pobierająca użytkownika z bazy danych na podstawie Google ID
     module.exports.get_user = async function (google_id) {
         try {
             const [rows, fields] = await connection.promise().query(`SELECT * FROM Users WHERE GoogleID = ?;`, [google_id]);
@@ -41,6 +47,7 @@ const connection = con.connect(mysql);
         }
     }
 
+    // Funkcja pobierająca wszystkich użytkowników z bazy danych
     module.exports.get_all_users = async function () {
         try {
             const [rows, fields] = await connection.promise().query(`SELECT * FROM Users;`);
@@ -55,6 +62,7 @@ const connection = con.connect(mysql);
         }
     }
 
+    // Funkcja pobierająca użytkownika na podstawie cube_mac i cube_user_id
     module.exports.get_user_by_cube = async function (cube_mac, cube_user_id) {
         try {
             const [cubes_rows, cubes_fields] = await connection.promise().query(`SELECT * FROM Cubes WHERE Mac = ? AND Cube_users_ID = ?;`, [cube_mac, cube_user_id]);
@@ -73,10 +81,15 @@ const connection = con.connect(mysql);
         }
     }
 
-    module.exports.get_cubes = async function (user_id) {
+}
+//#Cube management functions
+{
+    // Pobranie kostki na podstawie cube_mac i cube_user_id
+    module.exports.get_cube = async function (cube_mac, cube_user_id) {
         try {
-            const [rows, fields] = await connection.promise().query(`SELECT * FROM Cubes WHERE UserID = ?;`, [user_id]);
-            return rows;
+            const [cubes_rows, cubes_fields] = await connection.promise().query(`SELECT * FROM Cubes WHERE Mac = ? AND Cube_users_ID = ?;`, [cube_mac, cube_user_id]);
+
+            return cubes_rows[0];
         } catch (error) {
             console.error("Error retrieving cube: ", error);
             return {
@@ -87,20 +100,7 @@ const connection = con.connect(mysql);
         }
     }
 
-    module.exports.add_cube = async function (user_id, cube_mac, cube_user_id) {
-        try {
-            const result = await connection.promise().query(`INSERT INTO Cubes (UserID, Mac, Cube_users_ID) VALUES (?, ?, ?);`, [user_id, cube_mac, cube_user_id]);
-            return result;
-        } catch (error) {
-            console.error("Error retrieving cube: ", error);
-            return {
-                success: false,
-                code: 201,
-                error: "Invalid request"
-            };
-        }
-    }
-
+    // Funkcja usuwająca kostkę z bazy danych
     module.exports.remove_cube = async function (user_id, cube_mac, cube_user_id) {
         try {
             const [rows, fields] = await connection.promise().query(`SELECT * FROM Cubes WHERE UserID = ? AND Mac = ? AND Cube_users_ID = ?;`, [user_id, cube_mac, cube_user_id]);
@@ -131,9 +131,41 @@ const connection = con.connect(mysql);
             };
         }
     }
+
+    // Funkcja pobierająca wszystkie kostki na podstawie user_id
+    module.exports.get_cubes = async function (user_id) {
+        try {
+            const [rows, fields] = await connection.promise().query(`SELECT * FROM Cubes WHERE UserID = ?;`, [user_id]);
+            return rows;
+        } catch (error) {
+            console.error("Error retrieving cube: ", error);
+            return {
+                success: false,
+                code: 201,
+                error: "Invalid request"
+            };
+        }
+    }
+
+    // Funkcja dodająca kostkę do bazy danych
+    module.exports.add_cube = async function (user_id, cube_mac, cube_user_id) {
+        try {
+            const result = await connection.promise().query(`INSERT INTO Cubes (UserID, Mac, Cube_users_ID) VALUES (?, ?, ?);`, [user_id, cube_mac, cube_user_id]);
+            return result;
+        } catch (error) {
+            console.error("Error retrieving cube: ", error);
+            return {
+                success: false,
+                code: 201,
+                error: "Invalid request"
+            };
+        }
+    }
 }
+
 //#Projects management functions
 {
+    // Dodanie nowego projektu do tabeli Projects
     module.exports.add_project = async function (user_id, name, cube_id = null, side = -1) {
         if (cube_id && side < 0) {
             return {
@@ -161,6 +193,7 @@ const connection = con.connect(mysql);
         }
     }
 
+    // Usunięcie projektu z tabeli Projects oraz powiązanych zdarzeń z tabeli Events
     module.exports.remove_project = async function (user_id, project_id) {
         if (!user_id) {
             return {
@@ -183,6 +216,7 @@ const connection = con.connect(mysql);
         }
     }
 
+    // Ustawienie projektu jako aktywnego dla danego użytkownika i kostki
     module.exports.set_project_active = async function (user_id, project_id, cube_id, side) {
         try {
             const [rows, fields] = await connection.promise().query(`SELECT * FROM Cubes WHERE CubeID = ?;`, [cube_id]);
@@ -219,6 +253,7 @@ const connection = con.connect(mysql);
         }
     }
 
+    // Pobranie projektu na podstawie ProjectID
     module.exports.get_project = async function (project_id) {
         try {
             const [rows, fields] = await connection.promise().query(`SELECT * FROM Projects WHERE ProjectID = ?;`, [project_id]);
@@ -233,34 +268,22 @@ const connection = con.connect(mysql);
         }
     }
 
-    module.exports.get_user_projects = async function (user_id, active = null) {
-        if (active == null) {
-            try {
-                const [rows, fields] = await connection.promise().query(`SELECT * FROM Projects WHERE UserID = ?;`, [user_id]);
-                return rows;
-            } catch (error) {
-                console.error("Error retrieving user projects: ", error);
-                return {
-                    success: false,
-                    code: 201,
-                    error: "Invalid request"
-                };
-            }
-        } else {
-            try {
-                const [rows, fields] = await connection.promise().query(`SELECT * FROM Projects WHERE UserID = ? AND Active = ?;`, [user_id, active]);
-                return rows;
-            } catch (error) {
-                console.error("Error retrieving user projects: ", error);
-                return {
-                    success: false,
-                    code: 201,
-                    error: "Invalid request"
-                };
-            }
+    // Pobranie wszystkich projektów użytkownika
+    module.exports.get_user_projects = async function (user_id) {
+        try {
+            const [rows, fields] = await connection.promise().query(`SELECT * FROM Projects WHERE UserID = ?;`, [user_id]);
+            return rows;
+        } catch (error) {
+            console.error("Error retrieving user projects: ", error);
+            return {
+                success: false,
+                code: 201,
+                error: "Invalid request"
+            };
         }
     }
 
+    // Dodanie czasu(time_in_seconds) do projektu na ściance side na podstawie user_id, cube_mac i cube_user_id
     module.exports.add_time_to_project = async function (user_id, cube_mac, cube_user_id, side, time_in_seconds) {
         module.exports.get_cube(cube_mac, cube_user_id).then(async (cube) => {
             try {
@@ -287,35 +310,11 @@ const connection = con.connect(mysql);
         });
     }
 
-    module.exports.add_time_to_project_by_side = async function (cube_id, side, time_in_seconds) {
-        try {
-            const [rows, fields] = await connection.promise().query(`SELECT * FROM Projects WHERE CubeID = ? AND Side = ?;`, [cube_id, side]);
-
-            if (!rows[0]) {
-                return {
-                    success: false,
-                    code: 202,
-                    error: "No matches"
-                };
-            }
-
-            const result = await connection.promise().query(`UPDATE Projects
-                        SET Time = ?
-                        WHERE ProjectID = ?;`, [rows[0].Time + time_in_seconds, rows[0].ProjectID]);
-            return result;
-        } catch (error) {
-            console.error("Error adding time: ", error);
-            return {
-                success: false,
-                code: 201,
-                error: "Invalid request"
-            };
-        }
-    }
 
 }
 //#Event management functions
 {
+    // Dodanie nowego zdarzenia do tabeli Events
     module.exports.add_event = async function (user_id, cube_mac, cube_user_id, side, event_name) {
         module.exports.get_cube(cube_mac, cube_user_id).then(async (cube) => {
             try {
@@ -337,6 +336,7 @@ const connection = con.connect(mysql);
         });
     }
 
+    // Pobranie wszystkich zdarzeń powiązanych z projektem
     module.exports.get_events = async function (user_id, project_id) {
         try {
             const [project_rows, projects_fields] = await connection.promise().query(`SELECT * FROM Projects WHERE UserId = ? AND ProjectID = ?;`, [user_id, project_id]);
@@ -357,20 +357,5 @@ const connection = con.connect(mysql);
                 error: "Invalid request"
             };
         }
-    }
-}
-
-module.exports.get_cube = async function (cube_mac, cube_user_id) {
-    try {
-        const [cubes_rows, cubes_fields] = await connection.promise().query(`SELECT * FROM Cubes WHERE Mac = ? AND Cube_users_ID = ?;`, [cube_mac, cube_user_id]);
-
-        return cubes_rows[0];
-    } catch (error) {
-        console.error("Error retrieving cube: ", error);
-        return {
-            success: false,
-            code: 201,
-            error: "Invalid request"
-        };
     }
 }
