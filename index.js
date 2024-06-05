@@ -19,7 +19,7 @@ if (!process.env.GOOGLE_API_ID || !process.env.GOOGLE_API_SECRET || !process.env
 
 exp.set('view engine', 'ejs');
 
-
+exp.use(express.static("./public"));
 
 
 
@@ -124,14 +124,6 @@ exp.get('/auth/google/callback',
         });
     });
 
-exp.post("/update", (req, res) => {
-    app.add_log(`Endpoint: /update - Request: ${JSON.stringify(req.body)}`);
-    app.update_cube(req.body.mac, req.body.id, req.body.currentWall, res).then((e) => {
-            console.log(req.body);
-            res.send(e);
-    });
-});
-
 //exp.get("/update", (req, res) => {
 //app.update_cube(req.query.mac, req.query.id, req.query.currentWall, res).then((e) => {
 // DB.get_user_projects(1).then((result) => {
@@ -166,6 +158,16 @@ function req_validator(token, fields = []) {
         success: true
     }
 }
+
+
+
+exp.post("/update", (req, res) => {
+    app.add_log(`Endpoint: /update - Request: ${JSON.stringify(req.body)}`);
+    app.update_cube(req.body.mac, req.body.id, req.body.currentWall, res).then((e) => {
+            console.log(req.body);
+            res.send(e);
+    });
+});
 
 exp.post('/get_user_projects', (req, res) => {
     app.add_log(`Endpoint: /get_user_projects - Request: ${JSON.stringify(req.body)}`);
@@ -351,5 +353,11 @@ exp.post('/remove_cube', (req, res) => {
 exp.get('/logs', (req, res) => {
     res.render('index', {
         logs: app.get_logs()
+    });
+});
+
+exp.get('/', (req, res) => {
+    res.render('launcher', {
+        config: config
     });
 });

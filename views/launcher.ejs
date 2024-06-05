@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/img/icon.ico">
+    <title>App launcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        .container {
+            position: fixed;
+            top: 0;
+            height: 100vh;
+            width: 50vw;
+            overflow: hidden;
+            transition: width 0.5s, transform 0.5s, filter 1s;
+        }
+
+        .container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .text-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 4em;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        #logs {
+            right: 0;
+        }
+
+        #app {
+            left: 0;
+        }
+
+        .container:hover {
+            width: 60vw !important;
+            z-index: 10;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="app" class="container">
+        <img src="img/app_image.jpg" alt="App Image">
+        <div class="text-center">App</div>
+    </div>
+    <div id="logs" class="container">
+        <img src="img/log_image.jpg" alt="Logs Image">
+        <div class="text-center">Logs</div>
+    </div>
+
+    <script>
+        const appContainer = document.getElementById("app");
+        const logsContainer = document.getElementById("logs");
+
+        appContainer.addEventListener('click', () => {
+            window.location.href = "<%= config.login_callback_address %>";
+        });
+
+        logsContainer.addEventListener('click', () => {
+            window.location.href = "<%= config.server_address %>/logs";
+        });
+
+        appContainer.addEventListener('mouseover', () => {
+            logsContainer.style.width = "40vw";
+            logsContainer.style.filter = "blur(10px)";
+        });
+
+        appContainer.addEventListener('mouseout', () => {
+            logsContainer.style.width = "50vw";
+            appContainer.style.width = "50vw";
+            appContainer.style.filter = "blur(0px)";
+            logsContainer.style.filter = "blur(0px)";
+        });
+
+        logsContainer.addEventListener('mouseover', () => {
+            appContainer.style.width = "40vw";
+            appContainer.style.filter = "blur(10px)";
+        });
+
+        logsContainer.addEventListener('mouseout', () => {
+            logsContainer.style.width = "50vw";
+            appContainer.style.width = "50vw";
+            appContainer.style.filter = "blur(0px)";
+            logsContainer.style.filter = "blur(0px)";
+        });
+
+    </script>
+</body>
+
+</html>
