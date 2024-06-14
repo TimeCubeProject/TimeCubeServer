@@ -4,4 +4,4 @@
 
 [ESP](https://github.com/TimeCubeProject/TimeCube)
 
-[PDF]([https://lubieplacki.com]([https://github.com/TimeCubeProject/TimeCube](https://github.com/TimeCubeProject/TimeCube/blob/main/dokumentacja.pdf)
+[PDF](https://github.com/TimeCubeProject/TimeCube/blob/main/dokumentacja.pdf)
