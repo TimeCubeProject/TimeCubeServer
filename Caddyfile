@@ -1,0 +1,28 @@
+# Handle HTTP requests and redirect to HTTPS, except for preflight OPTIONS requests
+http://dergcube.westus.cloudapp.azure.com {
+        @cors_preflight {
+                method OPTIONS
+                header Origin *
+                header Access-Control-Request-Method *
+        }
+
+        handle @cors_preflight {
+                header Access-Control-Allow-Origin "*"
+                header Access-Control-Allow-Methods "GET, POST, OPTIONS"
+                header Access-Control-Allow-Headers "Content-Type, Authorization"
+                respond 204
+        }
+
+        handle {
+                redir https://dergcube.westus.cloudapp.azure.com{uri}
+        }
+}
+
+# Handle HTTPS requests and proxy to Node.js backend
+https://dergcube.westus.cloudapp.azure.com {
+        reverse_proxy localhost:3000 {
+                header_up Access-Control-Allow-Origin "*"
+                header_up Access-Control-Allow-Methods "GET, POST, OPTIONS"
+                header_up Access-Control-Allow-Headers "Content-Type, Authorization"
+        }
+}

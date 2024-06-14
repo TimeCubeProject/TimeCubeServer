@@ -17,7 +17,7 @@ connection.query("DROP TABLE IF EXISTS Cubes;");
 
 
 
-connection.query("CREATE TABLE Users (UserID int NOT NULL AUTO_INCREMENT, Sides int DEFAULT 6, GoogleID varchar(255), Email varchar(255), PRIMARY KEY (UserID), UNIQUE (GoogleID), UNIQUE (Email));");
+connection.query("CREATE TABLE Users (UserID int NOT NULL AUTO_INCREMENT, GoogleID varchar(255), Email varchar(255), PRIMARY KEY (UserID), UNIQUE (GoogleID), UNIQUE (Email));");
 
 connection.query("CREATE TABLE Cubes (CubeID int NOT NULL AUTO_INCREMENT, UserID int NOT NULL, Mac varchar(255), Cube_users_ID varchar(255), PRIMARY KEY (CubeID), UNIQUE (Mac), FOREIGN KEY (UserID) REFERENCES Users(UserID));");
 

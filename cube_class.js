@@ -67,5 +67,5 @@ Cube.prototype.update = function (side) {
     }, this.interval_update);
 }
 
-// Eksportowanie klasy Cube
+// Eksportowanie klasy Cube, aby można było jej użyć w innych plikach
 module.exports = Cube;

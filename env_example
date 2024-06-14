@@ -1,0 +1,9 @@
+GOOGLE_API_ID = xxx
+GOOGLE_API_SECRET = xxx
+MYSQL_LOGIN = xxx
+MYSQL_PASSWROD = xxx
+JWT_SECRET = xxx
+EXPRESS_SECRET = xxx
+
+
+Powyższe zmienne należy skonfigurować i zapisać w pliku .env w głównym folderze serwera
